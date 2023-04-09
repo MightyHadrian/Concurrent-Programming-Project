@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Dane
 {
-    internal interface IBall
+    interface IBall
     {
+        int Size { get; }
+        float X { get; set; }
+        float Y { get; set; }
+        float VelX { get; set; }
+        float VelY { get; set; }
     }
 }
