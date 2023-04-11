@@ -1,36 +1,32 @@
-﻿namespace Dane
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace Dane
 {
-    public class Ball : IBall
+    public class Ball : IData, INotifyPropertyChanged
     {
         private readonly int _size;
         private float _x;
         private float _y;
-        private float _velX;
-        private float _velY;
-
-        public Ball() { }
+        private readonly float _velX;
+        private readonly float _velY;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public Ball(int size, float x, float y, float velX, float velY)
         {
-            _size = size;
-            _x = x;
-            _y = y;
-            _velX = velX;
-            _velY = velY;
-        }
-
-        public Ball(int size, float x, float y, float velX, float velY, float minVel)
-        {
             var random = new System.Random();
 
+            _x = random.NextSingle() * (x - size);
+            _y = random.NextSingle() * (y - size);
             _size = random.Next(size - 10, size + 10);
-            _x = random.NextSingle() * x;
-            _y = random.NextSingle() * y;
-            _velX = random.NextSingle() * velX + minVel;
-            _velY = random.NextSingle() * velY + minVel;
+            _velX = random.Next(-1, 1) * velX + 0.1f;
+            _velY = random.Next(-1, 1) * velY + 0.1f;
         }
 
-        ~Ball() { }
+        public IData Create(int size, float x, float y, float velX, float velY)
+        {
+            return new Ball(size, x, y, velX, velY);
+        }
 
         public int Size
         {
@@ -39,14 +35,24 @@
 
         public float X
         {
-            get;
-            set;
+            get => _x;
+
+            set 
+            {
+                _x = value;
+                OnPropertyChanged();
+            }
         }
 
         public float Y
         {
-            get;
-            set;
+            get => _y;
+
+            set
+            {
+                _y = value;
+                OnPropertyChanged();
+            }
         }
 
         public float VelX
@@ -59,6 +65,11 @@
         {
             get;
             set;
+        }
+
+        protected void OnPropertyChanged([CallerMemberName] string name = "Ball")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

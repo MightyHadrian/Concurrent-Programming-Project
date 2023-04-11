@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -11,62 +14,80 @@ namespace Logika
 {
     public class Logic : ILogic
     {
-        private List<Ball> balls;
+        private ObservableCollection<DataController> _balls;
 
         public Logic()
         {
-            balls = new();
+            _balls = new();
         }
 
-        public Logic(int amount, int size, float x, float y, float velX, float velY, float minVel)
+        public Logic(int amount, int size, float x, float y, float velX, float velY)
         {
-            balls = new();
+            _balls = new();
 
 
             for (int i = 0; i < amount; i++)
             {
-                balls.Add(new Ball(size, x, y, velX, velY, minVel));
+                DataController data = DataController.Create(new Ball(size, x, y, velX, velY));
+                _balls.Add(data);
             }
         }
 
-        public void ResetBalls(int size, float x, float y, float velX, float velY, float minVel)
+        public ILogic Create()
         {
-            int amount = balls.Count;
-            balls.Clear();
+            return new Logic();
+        }
+
+        public void Start(int amount, int size, float x, float y, float velX, float velY)
+        {
+            _balls.Clear();
 
             for (int i = 0; i < amount; i++)
             {
-                balls.Add(new Ball(size, x, y, velX, velY, minVel));
+                DataController data = DataController.Create(new Ball(size, x, y, velX, velY));
+                _balls.Add(data);
             }
         }
 
-        public void UpdateBalls()
+        public void Reset(int size, float x, float y, float velX, float velY)
         {
-            foreach (var ball in balls)
+            int amount = _balls.Count;
+            _balls.Clear();
+
+            for (int i = 0; i < amount; i++)
+            {
+                DataController data = DataController.Create(new Ball(size, x, y, velX, velY));
+                _balls.Add(data);
+            }
+        }
+
+        public void Update()
+        {
+            foreach (var ball in _balls)
             {
                 ball.X += ball.VelX;
                 ball.Y += ball.VelY;
             }
         }
 
-        public IReadOnlyList<Ball> GetBalls()
+        public ObservableCollection<DataController> GetList()
         {
-            return balls;
+            return _balls;
         }
 
-        public int GetBallSize(int index)
+        public int GetSize(int index)
         {
-            return balls[index].Size;
+            return _balls[index].Size;
         }
 
-        public Tuple<float, float> GetBallXY(int index)
+        public Tuple<float, float> GetPositionXY(int index)
         {
-            return new Tuple<float, float>(balls[index].X, balls[index].Y);
+            return new Tuple<float, float>(_balls[index].X, _balls[index].Size);
         }
 
-        public void ClearBalls()
+        public void Clear()
         {
-            balls.Clear();
+            _balls.Clear();
         }
     }
 }

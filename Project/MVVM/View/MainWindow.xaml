@@ -3,10 +3,42 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:View"
+        xmlns:vm="clr-namespace:PrezentacjaViewModel;assembly=ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="AB_MC_13" Height="600" Width="800">
+    <Window.DataContext>
+        <vm:ViewModel />
+    </Window.DataContext>
     <Grid>
+
+        <StackPanel Orientation="Horizontal" Margin="10,5,10,484" Focusable="True" AllowDrop="True">
+
+            <TextBox x:Name="Amount" Text="{Binding ObjectsAmount}" Margin="10,5,20,0" Width="300" FontFamily="Verdana" FontSize="36" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" SelectionOpacity="0.6" InputScope="Digits" AllowDrop="True"/>
+
+            <Button x:Name="Start_Button" Content="Start" Command="{Binding StartClickCommand}" Margin="10,0,10,0" Width="200" Background="#FF4DF166" FontFamily="Tahoma" FontSize="24" ClickMode="Press"/>
+            <Button x:Name="Reset_Button" Content="Reset" Command="{Binding ResetClickCommand}" Margin="10,0,10,0" Width="200" Background="#FFF37272" FontFamily="Tahoma" FontSize="24" ClickMode="Press"/>
+        </StackPanel>
+
+        <Border Background="#B2FFFF" BorderBrush="Black" BorderThickness="2" Margin="10,90,10,10" MaxWidth="780" MaxHeight="500">
+            <ItemsControl ItemsSource="{Binding Objects}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Ellipse Width="25" Height="25" Fill="Yellow" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding X, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Y, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+        </Border>
 
     </Grid>
 </Window>

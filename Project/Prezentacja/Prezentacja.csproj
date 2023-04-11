@@ -8,8 +8,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\MVVM\Model\Model.csproj" />
-		<ProjectReference Include="..\MVVM\View\View.csproj" />
+	  <ProjectReference Include="..\MVVM\Model\Model.csproj" />
+	  <ProjectReference Include="..\MVVM\ViewModel\ViewModel.csproj" />
+	  <ProjectReference Include="..\MVVM\View\View.csproj" />
 	</ItemGroup>
 
 </Project>

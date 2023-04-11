@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dane
 {
-    interface IBall
+    public interface IData
     {
+        public IData Create(int size, float x, float y, float velX, float velY);
         int Size { get; }
         float X { get; set; }
         float Y { get; set; }
