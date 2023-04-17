@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using Logika;
 using Dane;
-using System.Drawing;
-using System.Diagnostics;
 
 namespace PrezentacjaModel
 {
@@ -28,17 +21,27 @@ namespace PrezentacjaModel
 
         public ObservableCollection<DataController> GetCollection()
         {
-            return _logic.GetList();
+            return _logic.GetCollection();
         }
 
-        public void Start(int size, float x, float y, float velX, float velY)
+        public void Start(int size, int width, int height, float velX, float velY)
         {
-            _logic.Start(_amount, size, x, y, velX, velY);
+            _logic.Start(_amount, size, width, height, velX, velY);
         }
 
-        public void Reset(int size, float x, float y, float velX, float velY)
+        public void Restart()
         {
-            _logic.Reset(size, x, y, velX, velY);
+            _logic.Restart();
+        }
+
+        public void Reset(int size, int width, int height, float velX, float velY)
+        {
+            _logic.Reset(size, width, height, velX, velY);
+        }
+
+        public void Stop()
+        {
+            _logic.Stop();
         }
 
         public int GetNewObjectsAmount()

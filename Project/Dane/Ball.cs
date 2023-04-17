@@ -1,36 +1,55 @@
 ﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace Dane
 {
-    public class Ball : IData, INotifyPropertyChanged
+    public class Ball : IData
     {
         private readonly int _size;
+        private readonly int _width;
+        private readonly int _height;
         private float _x;
         private float _y;
-        private readonly float _velX;
-        private readonly float _velY;
+        private float _velX;
+        private float _velY;
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public Ball(int size, float x, float y, float velX, float velY)
+        public Ball(int size, int width, int height, float velX, float velY)
         {
             var random = new System.Random();
 
-            _x = random.NextSingle() * (x - size);
-            _y = random.NextSingle() * (y - size);
-            _size = random.Next(size - 10, size + 10);
-            _velX = random.Next(-1, 1) * velX + 0.1f;
-            _velY = random.Next(-1, 1) * velY + 0.1f;
+            _size = size;
+            _width = width;
+            _height = height;
+            _x = random.NextSingle() * (width - size);
+            _y = random.NextSingle() * (height - size);
+            _velX = random.NextSingle() - 0.5f * 2 * velX;
+            _velY = random.NextSingle() - 0.5f * 2 * velY;
         }
 
-        public IData Create(int size, float x, float y, float velX, float velY)
+        public IData Create(int size, int width, int height, float velX, float velY)
         {
-            return new Ball(size, x, y, velX, velY);
+            return new Ball(size, width, height, velX, velY);
+        }
+
+        public void Move()
+        {
+            X += _velX;
+            Y += _velY;
         }
 
         public int Size
         {
-            get;
+            get => _size;
+        }
+
+        public int Width
+        {
+            get => _width;
+        }
+
+        public int Height
+        {
+            get => _height;
         }
 
         public float X
@@ -40,7 +59,7 @@ namespace Dane
             set 
             {
                 _x = value;
-                OnPropertyChanged();
+                RaisePropertyChanged(nameof(X));
             }
         }
 
@@ -51,23 +70,25 @@ namespace Dane
             set
             {
                 _y = value;
-                OnPropertyChanged();
+                RaisePropertyChanged(nameof(Y));
             }
         }
 
         public float VelX
         {
-            get;
-            set;
+            get => _velX;
+
+            set => _velX = value;
         }
 
         public float VelY
         {
-            get;
-            set;
+            get => _velY;
+
+            set => _velY = value;
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string name = "Ball")
+        public void RaisePropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }

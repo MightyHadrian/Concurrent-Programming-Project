@@ -1,18 +1,13 @@
 ﻿using Dane;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace Logika
 {
-    public class LogicController
+    public class LogicController : INotifyPropertyChanged
     {
         private readonly ILogic _ilogic;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public LogicController(ILogic ilogic)
         {
@@ -24,40 +19,42 @@ namespace Logika
             return new LogicController(logic);
         }
 
-        public void Start(int amount, int size, float x, float y, float velX, float velY)
+        public void Start(int amount, int size, int width, int height, float velX, float velY)
         {
 
-            _ilogic.Start(amount, size, x, y, velX, velY);
+            _ilogic.Start(amount, size, width, height, velX, velY);
         }
 
-        public void Reset(int size, float x, float y, float velX, float velY)
+        public void Restart()
         {
-            _ilogic.Reset(size, x, y, velX, velY);
+
+            _ilogic.Restart();
         }
 
-        public void Update() 
-        { 
-            _ilogic.Update(); 
-        
-        }
-        public ObservableCollection<DataController> GetList() 
+        public void Reset(int size, int width, int height, float velX, float velY)
         {
-            return _ilogic.GetList();
+            _ilogic.Reset(size, width, height, velX, velY);
         }
 
-        public int GetSize(int index) 
+        public void Stop()
         {
-            return _ilogic.GetSize(index);
+
+            _ilogic.Stop();
         }
 
-        public Tuple<float, float> GetPositionXY(int index) 
+        public ObservableCollection<DataController> GetCollection() 
         {
-            return _ilogic.GetPositionXY(index);
+            return _ilogic.GetCollection();
         }
 
         public void Clear()
         {
             _ilogic.Clear();
+        }
+
+        public void RaisePropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
     }

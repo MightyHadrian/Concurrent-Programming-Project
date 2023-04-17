@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.ComponentModel;
 
 namespace Dane
 {
-    public class DataController
+    public class DataController : INotifyPropertyChanged
     {
         private readonly IData _idata;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public DataController(IData idata)
         {
@@ -21,9 +17,26 @@ namespace Dane
             return new DataController(data);
         }
 
+        public void Move()
+        {
+            _idata.Move();
+            RaisePropertyChanged(nameof(X));
+            RaisePropertyChanged(nameof(Y));
+        }
+
         public int Size
         {
             get => _idata.Size;
+        }
+
+        public int Width
+        {
+            get => _idata.Width;
+        }
+
+        public int Height
+        {
+            get => _idata.Height;
         }
 
         public float X
@@ -52,6 +65,11 @@ namespace Dane
             get => _idata.VelY;
 
             set => _idata.VelY = value;
+        }
+
+        public void RaisePropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
     }

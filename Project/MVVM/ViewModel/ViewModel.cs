@@ -1,16 +1,7 @@
-﻿using Dane;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using PrezentacjaModel;
-using System.Collections.Specialized;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
-using System.Xml.Linq;
 using System.Collections;
 
 namespace PrezentacjaViewModel
@@ -20,11 +11,14 @@ namespace PrezentacjaViewModel
         private readonly Model _model;
         private ICommand? _startButton;
         private ICommand? _resetButton;
+        private ICommand? _stopButton;
+        private bool isStopped;
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public ViewModel()
+        public ViewModel() 
         {
             _model = Model.Create();
+            isStopped = false;
         }
 
         private void RaisePropertyChanged(string propertyName)
@@ -66,17 +60,39 @@ namespace PrezentacjaViewModel
             }
         }
 
+        public ICommand StopClickCommand
+        {
+            get
+            {
+                RaisePropertyChanged(nameof(_stopButton));
+                return _stopButton ??= new ButtonCommand(() => StopAction(), () => CanExecute);
+            }
+        }
+
         public void StartAction()
         {
-            _model.Start(25, 780, 500, 1, 1);
+            if (isStopped)
+            {
+                _model.Restart();
+                isStopped = false;
+            } else
+            {
+                _model.Start(25, 770, 500, 3, 3);
+            }
         }
 
         public void ResetAction()
         {
-            _model.Reset(25, 780, 500, 1, 1);
+            _model.Reset(25, 770, 500, 3, 3);
         }
 
-        public bool CanExecute
+        public void StopAction()
+        {
+            isStopped = true;
+            _model.Stop();
+        }
+
+        public static bool CanExecute
         {
             get
             {
@@ -89,8 +105,8 @@ namespace PrezentacjaViewModel
     public class ButtonCommand : ICommand
     {
 
-        private Action _action;
-        private Func<bool> _canExecute;
+        private readonly Action _action;
+        private readonly Func<bool> _canExecute;
 
         /// <summary>
         /// Creates instance of the command handler
