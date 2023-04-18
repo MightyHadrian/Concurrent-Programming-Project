@@ -13,6 +13,8 @@ namespace Dane
         private float _velY;
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        public Ball() { }
+
         public Ball(int size, int width, int height, float velX, float velY)
         {
             var random = new System.Random();
@@ -22,8 +24,8 @@ namespace Dane
             _height = height;
             _x = random.NextSingle() * (width - size);
             _y = random.NextSingle() * (height - size);
-            _velX = random.NextSingle() - 0.5f * 2 * velX;
-            _velY = random.NextSingle() - 0.5f * 2 * velY;
+            _velX = (random.NextSingle() - 0.5f) * 2 * velX;
+            _velY = (random.NextSingle() - 0.5f) * 2 * velY;
         }
 
         public IData Create(int size, int width, int height, float velX, float velY)
@@ -35,6 +37,9 @@ namespace Dane
         {
             X += _velX;
             Y += _velY;
+
+            RaisePropertyChanged(nameof(X));
+            RaisePropertyChanged(nameof(Y));
         }
 
         public int Size
@@ -56,22 +61,14 @@ namespace Dane
         {
             get => _x;
 
-            set 
-            {
-                _x = value;
-                RaisePropertyChanged(nameof(X));
-            }
+            set => _x = value;
         }
 
         public float Y
         {
             get => _y;
 
-            set
-            {
-                _y = value;
-                RaisePropertyChanged(nameof(Y));
-            }
+            set => _y = value;
         }
 
         public float VelX

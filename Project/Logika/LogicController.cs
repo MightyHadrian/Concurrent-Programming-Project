@@ -21,13 +21,11 @@ namespace Logika
 
         public void Start(int amount, int size, int width, int height, float velX, float velY)
         {
-
             _ilogic.Start(amount, size, width, height, velX, velY);
         }
 
         public void Restart()
         {
-
             _ilogic.Restart();
         }
 
@@ -38,18 +36,17 @@ namespace Logika
 
         public void Stop()
         {
-
             _ilogic.Stop();
-        }
-
-        public ObservableCollection<DataController> GetCollection() 
-        {
-            return _ilogic.GetCollection();
         }
 
         public void Clear()
         {
             _ilogic.Clear();
+        }
+
+        public ObservableCollection<DataController> GetCollection() 
+        {
+            return _ilogic.GetCollection();
         }
 
         public void RaisePropertyChanged(string name)

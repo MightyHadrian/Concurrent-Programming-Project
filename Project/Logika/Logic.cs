@@ -76,12 +76,13 @@ namespace Logika
                     while (_stopToken.IsCancellationRequested) { }
 
                     Thread.Sleep(10);
+                    //await Task.Delay(10);
 
                     _mutex.WaitOne();
 
-                    // Critical section
-                    data.Move();
-                    CheckForWallCollision(data);
+                        // Critical section
+                        data.Move();
+                        CheckForWallCollision(data);
 
                     _mutex.ReleaseMutex();
                 }
@@ -95,9 +96,10 @@ namespace Logika
                 data.X = 0;
                 data.VelX *= -1;
             } 
-            else if ((data.X + data.Size) >= data.Width)
+            else if ((data.X + data.Size + 2) >= data.Width)
             {
-                data.X = data.Width - data.Size + 1;
+                // Minus 2 due to border thickness
+                data.X = data.Width - data.Size - 2;
                 data.VelX *= -1;
             }
 
@@ -106,9 +108,10 @@ namespace Logika
                 data.Y = 0;
                 data.VelY *= -1;
             }
-            else if ((data.Y + data.Size) >= data.Height)
+            else if ((data.Y + data.Size + 2) >= data.Height)
             {
-                data.Y = data.Height - data.Size + 1;
+                // Minus 2 due to border thickness
+                data.Y = data.Height - data.Size - 2;
                 data.VelY *= -1;
             }
         }

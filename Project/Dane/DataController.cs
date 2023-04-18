@@ -20,6 +20,7 @@ namespace Dane
         public void Move()
         {
             _idata.Move();
+
             RaisePropertyChanged(nameof(X));
             RaisePropertyChanged(nameof(Y));
         }
