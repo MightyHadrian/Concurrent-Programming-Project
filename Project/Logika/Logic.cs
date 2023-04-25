@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Dane;
 
 namespace Logika
@@ -13,20 +14,14 @@ namespace Logika
         private CancellationTokenSource _stopToken;
         private readonly ObservableCollection<DataController> _balls;
         private readonly ObservableCollection<Task> _tasks;
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         public Logic()
         {
             _balls = new();
-            _tasks = new();  
+            _tasks = new();
             _mutex = new();
             _cancelToken = new();
             _stopToken = new();
-        }
-
-        public ILogic Create()
-        {
-            return new Logic();
         }
 
         public void Start(int amount, int size, int width, int height, float velX, float velY)
@@ -70,32 +65,39 @@ namespace Logika
 
         public async Task CreateDataTask(DataController data)
         {
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 while (!_cancelToken.IsCancellationRequested)
                 {
                     while (_stopToken.IsCancellationRequested) { }
 
                     Thread.Sleep(10);
-                    //await Task.Delay(10);
 
                     _mutex.WaitOne();
 
-                        // Critical section
-                        data.Move();
-                        CheckForWallCollision(data);
+                    // Critical section
+                    Move(data);
+                    CheckForCollisions(data);
 
                     _mutex.ReleaseMutex();
                 }
             });
         }
 
-        public void CheckForWallCollision(DataController data)
+        public void Move(DataController data)
         {
-            if (data.X <= 0) 
+            data.X += data.VelX;
+            data.Y += data.VelY;
+        }
+
+        public void CheckForCollisions(DataController data)
+        {
+
+            if (data.X <= 0)
             {
                 data.X = 0;
                 data.VelX *= -1;
-            } 
+            }
             else if ((data.X + data.Size + 2) >= data.Width)
             {
                 // Minus 2 due to border thickness
@@ -124,8 +126,8 @@ namespace Logika
         public void Clear()
         {
             _balls.Clear();
-           
-            if (_tasks.Count > 0) 
+
+            if (_tasks.Count > 0)
             {
                 _cancelToken.Cancel();
 
@@ -137,11 +139,6 @@ namespace Logika
 
                 _cancelToken = new();
             }
-        }
-
-        public void RaisePropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
     }

@@ -17,19 +17,6 @@ namespace Dane
             return new DataController(data);
         }
 
-        public void Move()
-        {
-            _idata.Move();
-
-            RaisePropertyChanged(nameof(X));
-            RaisePropertyChanged(nameof(Y));
-        }
-
-        public int Size
-        {
-            get => _idata.Size;
-        }
-
         public int Width
         {
             get => _idata.Width;
@@ -40,32 +27,58 @@ namespace Dane
             get => _idata.Height;
         }
 
+        public int Size
+        {
+            get => _idata.Size;
+        }
+
+        public float Mass
+        {
+            get => _idata.Mass;
+        }
+
         public float X
         {
             get => _idata.X;
 
-            set => _idata.X = value;
+            set
+            {
+                _idata.X = value;
+                RaisePropertyChanged(nameof(X));
+            }
         }
 
         public float Y
         {
             get => _idata.Y;
 
-            set => _idata.Y = value;
+            set
+            {
+                _idata.Y = value;
+                RaisePropertyChanged(nameof(Y));
+            }
         }
 
         public float VelX
         {
             get => _idata.VelX;
 
-            set => _idata.VelX = value;
+            set
+            {
+                _idata.VelX = value;
+                RaisePropertyChanged(nameof(VelX));
+            }
         }
 
         public float VelY
         {
             get => _idata.VelY;
 
-            set => _idata.VelY = value;
+            set
+            {
+                _idata.VelY = value;
+                RaisePropertyChanged(nameof(VelY));
+            }
         }
 
         public void RaisePropertyChanged(string name)
