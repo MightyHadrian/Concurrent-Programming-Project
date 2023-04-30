@@ -14,7 +14,7 @@ namespace Logika
             _ilogic = ilogic;
         }
 
-        static public LogicController Create(ILogic logic)
+        public static LogicController Create(ILogic logic)
         {
             return new LogicController(logic);
         }

@@ -12,7 +12,7 @@ namespace Dane
             _idata = idata;
         }
 
-        static public DataController Create(IData data)
+        public static DataController Create(IData data)
         {
             return new DataController(data);
         }

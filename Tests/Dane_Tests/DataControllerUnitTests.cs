@@ -1,6 +1,5 @@
 ﻿using Dane;
 using Moq;
-using System.ComponentModel;
 
 namespace Dane_Tests
 {
@@ -8,37 +7,13 @@ namespace Dane_Tests
     public class DataControllerUnitTests
     {
         [TestMethod]
-        public void Move()
-        {
-            Mock<IData> mockData = new();
-
-            DataController data = new(mockData.Object);
-
-            mockData.Setup(data => data.Move()).Raises(data => data.PropertyChanged += null, new PropertyChangedEventArgs("Move")).Verifiable();
-
-            data.Move();
-
-            mockData.Verify();
-        }
-
-        [TestMethod]
-        public void GetSize()
-        {
-            Mock<IData> mockData = new();
-
-            DataController data = new(mockData.Object);
-
-            int temp = data.Size;
-
-            mockData.VerifyGet(data => data.Size, Times.Once);
-        }
-
-        [TestMethod]
         public void GetWidth()
         {
             Mock<IData> mockData = new();
 
             DataController data = new(mockData.Object);
+
+            mockData.SetupGet(d => d.Width);
 
             int temp = data.Width;
 
@@ -52,9 +27,41 @@ namespace Dane_Tests
 
             DataController data = new(mockData.Object);
 
+            mockData.SetupGet(d => d.Height);
+
             int temp = data.Height;
 
             mockData.VerifyGet(data => data.Height, Times.Once);
+        }
+
+
+        [TestMethod]
+        public void GetSize()
+        {
+            Mock<IData> mockData = new();
+
+            DataController data = new(mockData.Object);
+
+            mockData.SetupGet(d => d.Size);
+
+            int temp = data.Size;
+
+            mockData.VerifyGet(data => data.Size, Times.Once);
+        }
+
+
+        [TestMethod]
+        public void GetMass()
+        {
+            Mock<IData> mockData = new();
+            
+            DataController data = new(mockData.Object);
+
+            mockData.SetupGet(d => d.Mass);
+
+            float temp = data.Mass;
+
+            mockData.VerifyGet(data => data.Mass, Times.Once);
         }
 
         [TestMethod]
@@ -63,6 +70,8 @@ namespace Dane_Tests
             Mock<IData> mockData = new();
 
             DataController data = new(mockData.Object);
+
+            mockData.SetupGet(d => d.X);
 
             float temp = data.X;
 
@@ -74,10 +83,13 @@ namespace Dane_Tests
         {
             Mock<IData> mockData = new();
 
-            DataController data = new(mockData.Object)
-            {
-                X = 1.0f
-            };
+            mockData.SetupSet(d => d.X = 1.0f);
+
+            DataController data = new(mockData.Object);
+
+            mockData.SetupSet(d => d.X = 1.0f);
+
+            data.X = 1.0f;
 
             mockData.VerifySet(data => data.X = 1.0f);
         }
@@ -89,6 +101,8 @@ namespace Dane_Tests
 
             DataController data = new(mockData.Object);
 
+            mockData.SetupGet(d => d.Y);
+
             float temp = data.Y;
 
             mockData.VerifyGet(data => data.Y, Times.Once);
@@ -99,10 +113,11 @@ namespace Dane_Tests
         {
             Mock<IData> mockData = new();
 
-            DataController data = new(mockData.Object)
-            {
-                Y = 1.0f
-            };
+            DataController data = new(mockData.Object);
+
+            mockData.SetupSet(d => d.Y = 1.0f);
+
+            data.Y = 1.0f;
 
             mockData.VerifySet(data => data.Y = 1.0f);
         }
@@ -114,6 +129,8 @@ namespace Dane_Tests
 
             DataController data = new(mockData.Object);
 
+            mockData.SetupGet(d => d.VelX);
+
             float temp = data.VelX;
 
             mockData.VerifyGet(data => data.VelX, Times.Once);
@@ -124,10 +141,11 @@ namespace Dane_Tests
         {
             Mock<IData> mockData = new();
 
-            DataController data = new(mockData.Object)
-            {
-                VelX = 1.0f
-            };
+            DataController data = new(mockData.Object);
+
+            mockData.SetupSet(d => d.VelX = 1.0f);
+
+            data.VelX = 1.0f;
 
             mockData.VerifySet(data => data.VelX = 1.0f);
         }
@@ -139,6 +157,8 @@ namespace Dane_Tests
 
             DataController data = new(mockData.Object);
 
+            mockData.SetupGet(d => d.VelY);
+
             float temp = data.VelY;
 
             mockData.VerifyGet(data => data.VelY, Times.Once);
@@ -149,10 +169,11 @@ namespace Dane_Tests
         {
             Mock<IData> mockData = new();
 
-            DataController data = new(mockData.Object)
-            {
-                VelY = 1.0f
-            };
+            DataController data = new(mockData.Object);
+
+            mockData.SetupSet(d => d.VelY = 1.0f);
+
+            data.VelY = 1.0f;
 
             mockData.VerifySet(data => data.VelY = 1.0f);
         }

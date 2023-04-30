@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Dane;
 
 namespace Logika
@@ -12,7 +11,8 @@ namespace Logika
         public void Stop();
         public Task CreateDataTask(DataController data);
         public void Move(DataController data);
-        public void CheckForCollisions(DataController data);
+        public void CheckForWallCollisions(DataController data);
+        public void CheckForBallCollisions(DataController data);
         public ObservableCollection<DataController> GetCollection();
         public void Clear();
     }

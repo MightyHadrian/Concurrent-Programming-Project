@@ -76,6 +76,7 @@ namespace Logika_Tests
             mockLogic.Verify();
         }
 
+        [TestMethod]
         public void GetCollection()
         {
             Mock<ILogic> mockLogic = new();

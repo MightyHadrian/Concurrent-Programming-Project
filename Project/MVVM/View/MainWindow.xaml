@@ -30,7 +30,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Ellipse Width="25" Height="25" Fill="Yellow" />
+                        <Ellipse Height="{Binding Size, Mode=OneWay}" Width="{Binding Size, Mode=OneWay}" Fill="Yellow" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemContainerStyle>
