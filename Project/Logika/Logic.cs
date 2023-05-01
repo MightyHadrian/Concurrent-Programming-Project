@@ -23,7 +23,7 @@ namespace Logika
 
         public void Start(int amount, int size, int width, int height, float velX, float velY)
         {
-            ThreadPool.SetMinThreads(amount, amount / 2);
+            ThreadPool.SetMinThreads(amount, amount);
             Clear();
 
             for (int i = 0; i < amount; i++)
@@ -51,7 +51,7 @@ namespace Logika
         public void Reset(int size, int width, int height, float velX, float velY)
         {
             int amount = _balls.Count;
-            ThreadPool.SetMinThreads(amount, amount / 2);
+            ThreadPool.SetMinThreads(amount, amount);
             Clear();
 
             for (int i = 0; i < amount; i++)
