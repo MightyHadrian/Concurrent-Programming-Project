@@ -48,6 +48,8 @@ namespace Logika
 
         public void Reset(int size, int width, int height, float velX, float velY)
         {
+            Restart();
+
             int amount = _balls.Count;
             ThreadPool.SetMinThreads(amount, amount);
             Clear();
@@ -148,9 +150,9 @@ namespace Logika
 
         public void CheckForBallCollisions(DataController data)
         {
-            float distanceBetweenCenters, distanceToCollision, distanceDifference;
-            float newBallVelX, newBallVelY, newDataVelX, newDataVelY;
-            float ballRadius, dataRadius;
+            float distanceBetweenCenters, distanceToCollision, distanceDifference,
+                newBallVelX, newBallVelY, newDataVelX, newDataVelY,
+                ballRadius, dataRadius, oldDataX, oldDataY;
 
             foreach (var ball in _balls)
             {
@@ -159,8 +161,8 @@ namespace Logika
                     continue;
                 }
 
-                ballRadius = ball.Size / 2;
-                dataRadius = data.Size / 2;
+                ballRadius = ball.Size / 2.0f;
+                dataRadius = data.Size / 2.0f;
 
                 distanceBetweenCenters = Vector2.Distance(new(data.X + dataRadius, data.Y + dataRadius), new(ball.X + ballRadius, ball.Y + ballRadius));
 
@@ -168,6 +170,8 @@ namespace Logika
 
                 if (distanceBetweenCenters < distanceToCollision)
                 {
+                    distanceDifference = distanceToCollision - distanceBetweenCenters;
+
                     if (data.Mass == ball.Mass)
                     {
                         // Swapping velocities if balls have equal mass
@@ -176,18 +180,6 @@ namespace Logika
 
                         newBallVelX = data.VelX;
                         newBallVelY = data.VelY;
-
-                        lock (data)
-                        {
-                            data.VelX = newDataVelX;
-                            data.VelY = newDataVelY;
-                        }
-
-                        lock (ball)
-                        {
-                            ball.VelX = newBallVelX;
-                            ball.VelY = newBallVelY;
-                        }
                     }
                     else
                     {
@@ -197,18 +189,6 @@ namespace Logika
 
                         newDataVelX = (data.VelX * (data.Mass - ball.Mass) + 2 * ball.Mass * ball.VelX) / (ball.Mass + data.Mass);
                         newDataVelY = (data.VelY * (data.Mass - ball.Mass) + 2 * ball.Mass * ball.VelY) / (ball.Mass + data.Mass);
-
-                        lock (data)
-                        {
-                            data.VelX = newDataVelX;
-                            data.VelY = newDataVelY;
-                        }
-
-                        lock (ball)
-                        {
-                            ball.VelX = newBallVelX;
-                            ball.VelY = newBallVelY;
-                        }
                     }
 
                     // Calculating seperation vectors
@@ -216,14 +196,23 @@ namespace Logika
 
                     lock (data)
                     {
+                        data.VelX = newDataVelX;
+                        data.VelY = newDataVelY;
+
+                        oldDataX = data.X;
+                        oldDataY = data.Y;
+
                         data.X += (data.X - ball.X) / distanceBetweenCenters * distanceDifference;
                         data.Y += (data.Y - ball.Y) / distanceBetweenCenters * distanceDifference;
                     }
 
                     lock (ball)
                     {
-                        ball.X += (ball.X - data.X) / distanceBetweenCenters * distanceDifference;
-                        ball.Y += (ball.Y - data.Y) / distanceBetweenCenters * distanceDifference;
+                        ball.VelX = newBallVelX;
+                        ball.VelY = newBallVelY;
+
+                        ball.X += (ball.X - oldDataX) / distanceBetweenCenters * distanceDifference;
+                        ball.Y += (ball.Y - oldDataY) / distanceBetweenCenters * distanceDifference;
                     }
                 }
             }

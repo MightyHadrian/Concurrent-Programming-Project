@@ -73,8 +73,8 @@ namespace PrezentacjaViewModel
         {
             if (isStopped)
             {
-                _model.Restart();
                 isStopped = false;
+                _model.Restart();
             } else
             {
                 _model.Start(25, 770, 500, 3, 3);
@@ -83,6 +83,7 @@ namespace PrezentacjaViewModel
 
         public void ResetAction()
         {
+            isStopped = false;
             _model.Reset(25, 770, 500, 3, 3);
         }
 
