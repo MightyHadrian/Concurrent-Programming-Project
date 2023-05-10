@@ -6,7 +6,6 @@ namespace Logika
 {
     public class Logic : ILogic
     {
-        private readonly Mutex _mutex;
         private CancellationTokenSource _cancelToken;
         private CancellationTokenSource _stopToken;
         private readonly ObservableCollection<DataController> _balls;
@@ -14,7 +13,6 @@ namespace Logika
 
         public Logic()
         {
-            _mutex = new();
             _cancelToken = new();
             _stopToken = new();
             _balls = new();
@@ -80,7 +78,8 @@ namespace Logika
             {
                 while (!_cancelToken.IsCancellationRequested)
                 {
-                    while (_stopToken.IsCancellationRequested) {
+                    while (_stopToken.IsCancellationRequested)
+                    {
                         Thread.Sleep(50);
                     }
 
@@ -89,17 +88,11 @@ namespace Logika
                     //
                     // Start of critical section
                     //
-                    lock (data)
-                    {
-                        Move(data);
-                        CheckForWallCollisions(data);
-                    }
 
-                    _mutex.WaitOne();
-
+                    Move(data);
+                    CheckForWallCollisions(data);
                     CheckForBallCollisions(data);
 
-                    _mutex.ReleaseMutex();
                     //
                     // End of critical section
                     //
@@ -111,7 +104,8 @@ namespace Logika
 
         public void Move(DataController data)
         {
-            lock (data) { 
+            lock (data)
+            {
                 data.X += data.VelX;
                 data.Y += data.VelY;
             }
@@ -119,26 +113,36 @@ namespace Logika
 
         public void CheckForWallCollisions(DataController data)
         {
+            float newX = data.X, newY = data.Y, newVelX = data.VelX, newVelY = data.VelY;
+
             if (data.X <= 0)
             {
-                data.X = 0;
-                data.VelX *= -1;
+                newX = 0;
+                newVelX *= -1;
             }
             else if ((data.X + data.Size) >= data.Width)
             {
-                data.X = data.Width - data.Size;
-                data.VelX *= -1;
+                newX = data.Width - data.Size;
+                newVelX *= -1;
             }
 
             if (data.Y <= 0)
             {
-                data.Y = 0;
-                data.VelY *= -1;
+                newY = 0;
+                newVelY *= -1;
             }
             else if ((data.Y + data.Size) >= data.Height)
             {
-                data.Y = data.Height - data.Size;
-                data.VelY *= -1;
+                newY = data.Height - data.Size;
+                newVelY *= -1;
+            }
+
+            lock (data)
+            {
+                data.X = newX;
+                data.Y = newY;
+                data.VelX = newVelX;
+                data.VelY = newVelY;
             }
         }
 
@@ -148,7 +152,7 @@ namespace Logika
             float newBallVelX, newBallVelY, newDataVelX, newDataVelY;
             float ballRadius, dataRadius;
 
-            foreach (var ball in _balls) 
+            foreach (var ball in _balls)
             {
                 if (ball.Equals(data))
                 {
@@ -167,8 +171,23 @@ namespace Logika
                     if (data.Mass == ball.Mass)
                     {
                         // Swapping velocities if balls have equal mass
-                        (data.VelX, ball.VelX) = (ball.VelX, data.VelX);
-                        (data.VelY, ball.VelY) = (ball.VelY, data.VelY);
+                        newDataVelX = ball.VelX;
+                        newDataVelY = ball.VelY;
+
+                        newBallVelX = data.VelX;
+                        newBallVelY = data.VelY;
+
+                        lock (data)
+                        {
+                            data.VelX = newDataVelX;
+                            data.VelY = newDataVelY;
+                        }
+
+                        lock (ball)
+                        {
+                            ball.VelX = newBallVelX;
+                            ball.VelY = newBallVelY;
+                        }
                     }
                     else
                     {
@@ -179,20 +198,33 @@ namespace Logika
                         newDataVelX = (data.VelX * (data.Mass - ball.Mass) + 2 * ball.Mass * ball.VelX) / (ball.Mass + data.Mass);
                         newDataVelY = (data.VelY * (data.Mass - ball.Mass) + 2 * ball.Mass * ball.VelY) / (ball.Mass + data.Mass);
 
-                        ball.VelX = newBallVelX;
-                        ball.VelY = newBallVelY;
+                        lock (data)
+                        {
+                            data.VelX = newDataVelX;
+                            data.VelY = newDataVelY;
+                        }
 
-                        data.VelX = newDataVelX;
-                        data.VelY = newDataVelY;
+                        lock (ball)
+                        {
+                            ball.VelX = newBallVelX;
+                            ball.VelY = newBallVelY;
+                        }
                     }
 
                     // Calculating seperation vectors
                     distanceDifference = distanceToCollision - distanceBetweenCenters;
 
-                    data.X += (data.X - ball.X) / distanceBetweenCenters * distanceDifference;
-                    data.Y += (data.Y - ball.Y) / distanceBetweenCenters * distanceDifference;
-                    ball.X += (ball.X - data.X) / distanceBetweenCenters * distanceDifference;
-                    ball.Y += (ball.Y - data.Y) / distanceBetweenCenters * distanceDifference;
+                    lock (data)
+                    {
+                        data.X += (data.X - ball.X) / distanceBetweenCenters * distanceDifference;
+                        data.Y += (data.Y - ball.Y) / distanceBetweenCenters * distanceDifference;
+                    }
+
+                    lock (ball)
+                    {
+                        ball.X += (ball.X - data.X) / distanceBetweenCenters * distanceDifference;
+                        ball.Y += (ball.Y - data.Y) / distanceBetweenCenters * distanceDifference;
+                    }
                 }
             }
         }
