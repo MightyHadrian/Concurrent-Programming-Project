@@ -77,14 +77,14 @@ namespace PrezentacjaViewModel
                 _model.Restart();
             } else
             {
-                _model.Start(25, 770, 500, 3, 3);
+                _model.Start(25, 768, 498, 3, 3);
             }
         }
 
         public void ResetAction()
         {
             isStopped = false;
-            _model.Reset(25, 770, 500, 3, 3);
+            _model.Reset(25, 768, 498, 3, 3);
         }
 
         public void StopAction()
