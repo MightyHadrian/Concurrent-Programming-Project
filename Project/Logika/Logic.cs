@@ -293,8 +293,6 @@ namespace Logika
                 {
                     _events.Add(new Event(data.GetHashCode(), ball.GetHashCode(), EventType.BallsCollision));
 
-                    distanceDifference = distanceToCollision - distanceBetweenCenters;
-
                     if (data.Mass == ball.Mass)
                     {
                         // Swapping velocities if balls have equal mass
@@ -370,7 +368,7 @@ namespace Logika
             {
                 lock (_events)
                 {
-                    File.AppendAllTextAsync(_filePath, JsonSerializer.Serialize(_events, _serializerOptions));
+                    File.AppendAllText(_filePath, JsonSerializer.Serialize(_events, _serializerOptions));
 
                     _events.Clear();
                 }
